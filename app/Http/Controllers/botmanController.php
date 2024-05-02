@@ -2,135 +2,94 @@
 
 namespace App\Http\Controllers;
 
+use App\Conversation\FirstConversation as ConversationFirstConversation;
 use Illuminate\Http\Request;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\BotManFactory;
 use BotMan\BotMan\Drivers\DriverManager;
 use BotMan\BotMan\Messages\Incoming\Answer;
-
-class botmanController extends Controller
+use BotMan\BotMan\Messages\Conversations\Conversation;
+class botmanController extends  Conversation
 {
-    public function callback($botman)
-    {
-        //$botman = app('botman');
-        $botman->fallback(function($bot) {
-            $bot->reply('Sorry, I did not understand these commands. Here is a list of commands I understand: ...');
-        }); 
+    // public function callback($botman)
+    // {
+    //     //$botman = app('botman');
+    //     $botman->fallback(function($bot) {
+    //         $bot->reply('Sorry, I did not understand these commands. Here is a list of commands I understand: ...');
+    //     }); 
     
-    }
+    // }
 
-    public function handle()
+    public function handle( )
     {
-        
-        $botman = app('botman');
-        // $botman->hears('My First Message', function ($bot) {
-        //     $bot->reply('Your First Response');
-        // });
-        $botman->hears('{message}', function($botman, $message) {
-  
+        //$conversation = new GlobalFirstConversation; // Replace with your conversation class name
+
+        // dd('1111111111');
+         $botman = app('botman');
+         $botman->hears('{message}', function($botman, $message) {
             if ($message == 'hi') {
-                $this->askName($botman);
-            }
-            else{
-               // $botman->reply($callback);
-                //this is not working 
-                return $botman->callback();
-            }
+                $conversation = new ConversationFirstConversation; 
+                //dd('gdf');
+                        // $this->startConversation(new app\Botman\FirstConversation);
+                        //$message->startConversation(new GlobalFirstConversation);
+                        $botman->startConversation($conversation); 
+                     }else
+                     {
+                      
+                            $botman->reply('Sorry, I did not understand these commands. Here is a list of commands I understand: ...');
+                     
+                     }
+         });
+          $botman->listen();
+        // $botman->hears('hi', function($bot) {
+        //     dd('gdf');
+        //     $bot->startConversation(new BotmanStartconversation);
+        // });
+        // $botman->hears('{message}', function($botman, $message) {
   
-        });
+        //     if ($message == 'hi') {
+        //         $this->askName($botman);
+        //     }
+        //     else{
+        //        // $botman->reply($callback);
+        //         //this is not working 
+        //         return $botman->callback();
+        //     }
   
-        $botman->listen();
+        // });
+  
+        // $botman->listen();
     }
   
     /**
      * Place your BotMan logic here.
      */
-    public function askName($botman)
+    public function askName()
     {
+        $botman = app('botman');
         $botman->ask('Hello! What is your Name?', function(Answer $answer) {
   
             $name = $answer->getText();
-  
+
             $this->say('Nice to meet you '.$name);
+           // $this->askEmail();
+        });
+       
+    }
+
+    public function askEmail()
+    {
+        $botman = app('botman');
+        $botman->ask('Can you give your Email?', function(Answer $answer) {
+  
+            $phone = $answer->getText();
+        
+            $this->say('thnak you for you answer '.$phone);
         });
     }
 
-
-     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
-    public function index()
+    public function run()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-
-       
-
-    }
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $this->askName();
     }
 }

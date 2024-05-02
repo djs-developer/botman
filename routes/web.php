@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\botmanController;
+use App\Http\Controllers\startchatController;
 use Illuminate\Support\Facades\Route;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\BotManFactory;
@@ -24,8 +25,12 @@ use BotMan\BotMan\Middleware\Dialogflow;
 Route::get('/', function () {
     return view('botman');
     });
-  
-   Route::controller(BotManController::class)->group(function () {
+    // Route::controller(startchatController::class)->group(function () {
+    //     Route::match(['get', 'post'], '/botman','start');
+    // });
+
+   Route::controller(botManController::class)->group(function () {
+   // print_r('ffg');
     Route::match(['get', 'post'], '/botman','handle');
 });
  
