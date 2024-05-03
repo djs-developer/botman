@@ -33,4 +33,8 @@ Route::get('/', function () {
    // print_r('ffg');
     Route::match(['get', 'post'], '/botman','handle');
 });
+
+Route::get('botdemo/chatserver1',function(){
+    return view ('style');
+});
  

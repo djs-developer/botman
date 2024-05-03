@@ -7,10 +7,16 @@ use BotMan\BotMan\Messages\Outgoing\Question;
 
 class SelectServiceConversation extends Conversation
 {
+      public $data;
+
+    public function __construct()
+    {
+        $this->data = ["question" => "What kind of Service you are looking for?"];
+    }
    // protected $selectedText;
     public function askService()
     {
-        $question = Question::create('What kind of Service you are looking for?')
+        $question = Question::create($this->data['question'])
         ->callbackId('select_service')
         ->addButtons([
             Button::create('Home Loan')->value('Home Loan'),
@@ -25,6 +31,10 @@ class SelectServiceConversation extends Conversation
                 $selectedValue = $answer->getValue(); // will be either 'yes' or 'no'
                 $selectedText = $answer->getText();
                 $this->say('so You click '.$selectedText);
+                $this->bot->userStorage()->save([
+                    'question'=>$this->data['question'],
+                    'answer' => $answer->getText(),
+                ]);
                 if($selectedText == 'Home Loan')
                 {
                             $questionHome = Question::create('What kind of Home you are looking for?')
@@ -35,12 +45,16 @@ class SelectServiceConversation extends Conversation
                                         Button::create('Townhome')->value('Townhome'),
                                         Button::create('Apartment')->value('Apartment'),
                             ]);
-
+                          
                             $this->ask($questionHome,function(Answer $answerhome){
                                 if ($answerhome->isInteractiveMessageReply()) {
                                     $selectedhome = $answerhome->getValue(); // will be either 'yes' or 'no'
                                     $selectedhometext = $answerhome->getText();
                                     $this->say('so You click '.$selectedhometext);
+                                    $this->bot->userStorage()->save([
+                                      //  'question'=>'What kind of Home you are looking for?',
+                                        'What kind of Home you are looking for?' => $answerhome->getText(),
+                                    ]);
                                 }
                             });
                 }elseif($selectedText == 'Car Loan'){

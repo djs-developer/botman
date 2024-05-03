@@ -17,6 +17,7 @@
         </style>
     </head>
     <body>
+
     </body>
   
     <!-- <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/assets/css/chat.min.css"> -->
@@ -31,8 +32,13 @@
     <script src='https://cdn.jsdelivr.net/npm/botman-web-widget@0/build/js/widget.js'></script>
     <script>
         var botmanWidget = {
+            frameEndpoint: '<?php echo url('botdemo/chatserver1');?>',
             aboutText: 'ssdsd',
-            introMessage: "✋ Hi! I'm from ChatBot. How can I help you? please write Hi for further process."
+            introMessage: "✋ Hi! I'm from ChatBot. How can I help you? please write Hi for further process.",
+            title:'Chat Bot',
+            mainColor:'#383838',
+            bubbleBackground:'#c02026',
+            headerTextColor: '#fff',
         };
 
         window.addEventListener('load', function () {
