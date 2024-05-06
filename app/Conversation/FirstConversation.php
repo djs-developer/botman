@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Conversation;
+
+use App\Models\chatbot;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\BotMan;
@@ -27,10 +29,23 @@ class FirstConversation extends Conversation
             $this->say('Nice to meet you '.$this->firstname);
             $this->askEmail();
 
-            $this->bot->userStorage()->save([
-                'Name' => $answer->getText(),
-            ]);
-        });
+            $name = $answer->getText(); // Extract the mobile number
+            $id = $this->bot->getUser()->getId();
+            //dd($id);
+        // Create a new UserMobile instance
+        $userMobile = new chatbot([
+            'user_id' =>$id, // Get user ID from Botman message
+            'question'=>'name',
+            'answer' => $name,
+        ]);
+        $userMobile->save();
+    
+        // Save the instance to the database
+        // $userMobile->save();
+        //     $this->bot->userStorage()->save([
+        //         'Name' => $answer->getText(),
+        //     ]);
+         });
     }
 
     public function askEmail()
@@ -50,9 +65,19 @@ class FirstConversation extends Conversation
                 return $this->askEmail();
             }
     
-            $this->bot->userStorage()->save([
-                'email' => $answer->getText(),
-            ]);
+            $email = $answer->getText(); // Extract the mobile number
+            $id = $this->bot->getUser()->getId();
+        // Create a new UserMobile instance
+        $userMobile = new chatbot([
+            'user_id' =>$id, // Get user ID from Botman message
+            'question'=>'email',
+            'answer' => $email,
+        ]);
+        $userMobile->save();
+
+            // $this->bot->userStorage()->save([
+            //     'email' => $answer->getText(),
+            // ]);
             
             $this->say('Great - that is all we need, '.$this->firstname);
             $this->askMobile();
@@ -80,9 +105,19 @@ class FirstConversation extends Conversation
 
         }
 
-        $this->bot->userStorage()->save([
-            'mobile' => $answer->getText(),
+        $mobile = $answer->getText(); // Extract the mobile number
+         $id = $this->bot->getUser()->getId();
+        // Create a new UserMobile instance
+        $userMobile = new chatbot([
+            'user_id' =>$id, // Get user ID from Botman message
+            'question'=>'mobile',
+            'answer' => $mobile,
         ]);
+        $userMobile->save();
+
+        // $this->bot->userStorage()->save([
+        //     'mobile' => $answer->getText(),
+        // ]);
 
         $this->say('Great!');
 

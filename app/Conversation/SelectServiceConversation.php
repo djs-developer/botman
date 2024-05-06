@@ -1,5 +1,7 @@
 <?php
 namespace App\Conversation;
+
+use App\Models\chatbot;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -11,7 +13,9 @@ class SelectServiceConversation extends Conversation
 
     public function __construct()
     {
-        $this->data = ["question" => "What kind of Service you are looking for?"];
+        $this->data = ["question" => "What kind of Service you are looking for?",
+        "homequestion" => "'What kind of Home you are looking for?",
+    ];
     }
    // protected $selectedText;
     public function askService()
@@ -28,16 +32,27 @@ class SelectServiceConversation extends Conversation
         if ($answer->isInteractiveMessageReply()) {
            // $this->bot->userStorage()->save([
                 //'service' => $answer->getValue(),
-                $selectedValue = $answer->getValue(); // will be either 'yes' or 'no'
-                $selectedText = $answer->getText();
+                $selectedValue = $answer->getValue(); // will be give value of button
+                $selectedText = $answer->getText(); //will give button text
                 $this->say('so You click '.$selectedText);
+                //$selected = $answer->getText(); // Extract the mobile number
+                $id = $this->bot->getUser()->getId();
+            // Create a new UserMobile instance
+            $userMobile = new chatbot([
+                'user_id' =>$id, // Get user ID from Botman message
+                'question'=>$this->data['question'],
+                'answer' => $selectedText,
+            ]);
+            $userMobile->save();
+
+
                 $this->bot->userStorage()->save([
                     'question'=>$this->data['question'],
                     'answer' => $answer->getText(),
                 ]);
                 if($selectedText == 'Home Loan')
                 {
-                            $questionHome = Question::create('What kind of Home you are looking for?')
+                            $questionHome = Question::create($this->data['homequestion'])
                             ->callbackId('select_service')
                             ->addButtons([
                                         Button::create('Duplex')->value('Duplex'),
@@ -51,10 +66,18 @@ class SelectServiceConversation extends Conversation
                                     $selectedhome = $answerhome->getValue(); // will be either 'yes' or 'no'
                                     $selectedhometext = $answerhome->getText();
                                     $this->say('so You click '.$selectedhometext);
-                                    $this->bot->userStorage()->save([
-                                      //  'question'=>'What kind of Home you are looking for?',
-                                        'What kind of Home you are looking for?' => $answerhome->getText(),
+                                    $id = $this->bot->getUser()->getId();
+                                    // Create a new UserMobile instance
+                                    $userMobile = new chatbot([
+                                        'user_id' =>$id, // Get user ID from Botman message
+                                        'question'=>'What kind of Home you are looking for?',
+                                        'answer' => $selectedhometext,
                                     ]);
+                                    $userMobile->save();
+                                    // $this->bot->userStorage()->save([
+                                    //   //  'question'=>'What kind of Home you are looking for?',
+                                    //     'What kind of Home you are looking for?' => $answerhome->getText(),
+                                    // ]);
                                 }
                             });
                 }elseif($selectedText == 'Car Loan'){
@@ -73,6 +96,15 @@ class SelectServiceConversation extends Conversation
                                     $selectedcar = $answercar->getValue(); // will be either 'yes' or 'no'
                                     $selectedcartext = $answercar->getText();
                                     $this->say('so You click '.$selectedcartext);
+                                    $id = $this->bot->getUser()->getId();
+                                    // Create a new UserMobile instance
+                                    $userMobile = new chatbot([
+                                        'user_id' =>$id, // Get user ID from Botman message
+                                        'question'=>'What kind of Car you are looking for?',
+                                        'answer' => $selectedcartext,
+                                    ]);
+                                    $userMobile->save();
+                                    $this->bot->startConversation( new userdataConversation());
                                 }
                             });
                 }elseif($selectedText == 'Gold Loan')
@@ -89,6 +121,14 @@ class SelectServiceConversation extends Conversation
                                     $selectedgold = $answergold->getValue(); // will be either 'yes' or 'no'
                                     $selectedgoldtext = $answergold->getText();
                                     $this->say('so You click '.$selectedgoldtext);
+                                    $id = $this->bot->getUser()->getId();
+                                    // Create a new UserMobile instance
+                                    $userMobile = new chatbot([
+                                        'user_id' =>$id, // Get user ID from Botman message
+                                        'question'=>'What kind of Gold you are looking for?',
+                                        'answer' => $selectedgoldtext,
+                                    ]);
+                                    $userMobile->save();
 
 
                                     if($selectedgoldtext == 'Rose Gold')
@@ -96,17 +136,29 @@ class SelectServiceConversation extends Conversation
                                 $this->ask('Do you Want to Buy Rose Gold ?Say YES or NO', [
                                             [
                                                 'pattern' => 'yes|yep',
-                                                'callback' => function () {
+                                                'callback' => function (Answer $answer) {
+                                                    $userans = $answer->getText();
+                                                   // dd($userans);
                                                     $this->say('your Rose Gold Amount is 10,000');
+                                                    return $this->respond([]);
                                                 }
                                             ],
                                             [
                                                 'pattern' => 'nah|no|nope',
-                                                'callback' => function () {
+                                                'callback' => function (Answer $answer) {
+                                                    $userans = $answer->getText();
                                                     $this->say('Sorry, you select no we can not help you for next process.');
                                                 }
                                             ]
                                         ]);
+                                    //     $id = $this->bot->getUser()->getId();
+                                    // // Create a new UserMobile instance
+                                    // $userMobile = new chatbot([
+                                    //     'user_id' =>$id, // Get user ID from Botman message
+                                    //     'question'=>'Do you Want to Buy Rose Gold ?Say YES or NO',
+                                    //     'answer' => $userans,
+                                    // ]);
+                                    // $userMobile->save();
                             }
                                 }
                             });
