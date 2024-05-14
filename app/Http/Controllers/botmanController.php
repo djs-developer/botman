@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Conversation\FirstConversation as ConversationFirstConversation;
+use App\Conversation\SelectServiceConversation;
 use Illuminate\Http\Request;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\BotManFactory;
@@ -28,8 +29,9 @@ class botmanController extends  Conversation
          $botman = app('botman');
          $botman->hears('{message}', function($botman, $message) {
             if ($message == 'hi') {
+                
                 $conversation = new ConversationFirstConversation; 
-                //dd('gdf');
+               // $conversation = new SelectServiceConversation;
                         // $this->startConversation(new app\Botman\FirstConversation);
                         //$message->startConversation(new GlobalFirstConversation);
                         $botman->startConversation($conversation); 
